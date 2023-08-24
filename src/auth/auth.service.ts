@@ -1,12 +1,16 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import * as argon from 'argon2';
+
 import { SignupDto } from './dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { SigninDto } from './dto/signin.dto';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
-	constructor(private prisma: PrismaService) {};
+	constructor(private prisma: PrismaService, private jwt: JwtService, private config: ConfigService) {};
 
 	async signup(dto: SignupDto) {
 		// generate password hash
@@ -23,11 +27,8 @@ export class AuthService {
 				}
 			});
 			
-			// delete hash from final result
-			delete user.hash;
-
-			// return created user
-			return user;
+			// return accessToken (JWT)
+			return this.signToken(user.id, user.username);
 		} catch (error) {
 			// if error is instance of PrismaClient Request error
 			if (error instanceof PrismaClientKnownRequestError) {
@@ -42,7 +43,39 @@ export class AuthService {
 		}
 	}
 
-	signin() {
-		return { msg: 'signin' };
+	async signin(dto: SigninDto) {
+		// find user by username
+		const user = await this.prisma.user.findUnique({
+			where: {
+				username: dto.username
+			}
+		});
+		// if user not exist - throw an exception
+		if (!user) throw new ForbiddenException('Credentials not correct');
+
+		// compare password
+		const passwordMatches = await argon.verify(user.hash, dto.password);
+		// if password incorrect - throw an exception
+		if (!passwordMatches) throw new ForbiddenException('Credentials not correct'); 
+
+		// return accessToken (JWT)
+		return this.signToken(user.id, user.username);
+	}
+
+	async signToken(userId: number, username: string): Promise<{ accessToken: string }> {
+		const payload = {
+			sub: userId,
+			username
+		};
+		const secret = this.config.get('JWT_SECRET');
+
+		// generate token
+		const token = await this.jwt.signAsync(payload, {
+			expiresIn: '24h',
+			secret
+		});
+
+		// return token
+		return { accessToken: token };
 	}
 }
