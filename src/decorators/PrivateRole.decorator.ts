@@ -1,5 +1,5 @@
 import { UseGuards, applyDecorators } from "@nestjs/common";
-import { Role } from "./role.decorator";
+import { Role } from "./";
 import { RoleGuard } from "src/guards";
 import { TPrivateRoutes } from "src/typings/PrivateRoutes.typing";
 

@@ -2,7 +2,7 @@ import { Controller, Get, Post } from '@nestjs/common';
 import { Article } from '@prisma/client';
 
 import { ArticleService } from './articles.service';
-import { Authorize } from 'src/decorators/Authorize.decorator';
+import { Authorize } from 'src/decorators';
 
 @Controller('articles')
 export class ArticlesController {

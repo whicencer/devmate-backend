@@ -1,9 +1,9 @@
 import { CanActivate, ExecutionContext, Inject, UnauthorizedException } from "@nestjs/common";
-import { User } from "@prisma/client";
+import { Reflector } from "@nestjs/core";
 import { JwtService } from "@nestjs/jwt";
+import { User } from "@prisma/client";
 import { Observable } from "rxjs";
 
-import { Reflector } from "@nestjs/core";
 import { ROLE_KEY_STRING } from "src/decorators/role.decorator";
 
 export class RoleGuard implements CanActivate {
