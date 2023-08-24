@@ -28,7 +28,7 @@ export class AuthService {
 			});
 			
 			// return accessToken (JWT)
-			return this.signToken(user.id, user.username);
+			return this.signToken(user.id, user.username, user.role);
 		} catch (error) {
 			// if error is instance of PrismaClient Request error
 			if (error instanceof PrismaClientKnownRequestError) {
@@ -59,13 +59,14 @@ export class AuthService {
 		if (!passwordMatches) throw new ForbiddenException('Credentials not correct'); 
 
 		// return accessToken (JWT)
-		return this.signToken(user.id, user.username);
+		return this.signToken(user.id, user.username, user.role);
 	}
 
-	async signToken(userId: number, username: string): Promise<{ accessToken: string }> {
+	async signToken(userId: number, username: string, role: string): Promise<{ accessToken: string }> {
 		const payload = {
 			sub: userId,
-			username
+			username,
+			role
 		};
 		const secret = this.config.get('JWT_SECRET');
 

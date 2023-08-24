@@ -19,6 +19,7 @@ model User {
   username    String    @unique
   fullname    String
   hash        String
+  role        String    @default("user")
 
   articles    Article[]
 
