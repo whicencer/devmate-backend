@@ -11,15 +11,16 @@ datasource db {
 }
 
 model User {
-	id          Int       @id @default(autoincrement())
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+	id              Int       @id @default(autoincrement())
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 
-  email       String    @unique
-  username    String    @unique
-  fullname    String
-  hash        String
-  role        String    @default("user")
+  email           String    @unique
+  username        String    @unique
+  fullname        String
+  profilePicture  String?
+  hash            String
+  role            String    @default("user")
 
   articles    Article[]
 
@@ -35,8 +36,8 @@ model Article {
   media     String?
   likes     Int      @default(0)
 
-	author    User     @relation(fields: [userId], references: [id])
   userId    Int
+	author    User     @relation(fields: [userId], references: [id])
 
   @@map("articles")
 }

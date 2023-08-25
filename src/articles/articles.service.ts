@@ -8,7 +8,11 @@ export class ArticleService {
   constructor(private readonly prisma: PrismaService) {};
 
   async getArticles(): Promise<Article[]> {
-    return this.prisma.article.findMany({});
+    return this.prisma.article.findMany({
+      include: {
+        author: true
+      }
+    });
   }
   
   async createArticle(userId: number, dto: CreateArticleDto) {
