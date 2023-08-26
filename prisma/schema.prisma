@@ -22,7 +22,7 @@ model User {
   hash            String
   role            String    @default("user")
 
-  articles    Article[]
+  articles        Article[]
 
   @@map("users")
 }
