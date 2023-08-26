@@ -1,26 +1,28 @@
-import { Controller, Get, Post } from '@nestjs/common';
-import { Article } from '@prisma/client';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post } from "@nestjs/common";
+import { Article } from "@prisma/client";
 
-import { ArticleService } from './articles.service';
-<<<<<<< HEAD
-import { Authorize } from 'src/decorators';
-=======
 import { Authorize } from '../decorators/Authorize.decorator';
->>>>>>> feature-auth
+import { ArticleService } from "./articles.service";
+import { CreateArticleDto } from "./dto/createArticle.dto";
+import { GetUser } from "../decorators";
 
-@Controller('articles')
+@Controller("articles")
+@Authorize()
 export class ArticlesController {
   constructor(private readonly articlesService: ArticleService) {}
 
-  @Authorize()
   @Get()
   async getArticles(): Promise<Article[]> {
     return this.articlesService.getArticles();
   }
-  
-  @Authorize()
+
   @Post()
-  async createArticle() {
-    return this.articlesService.createArticle();
+  async createArticle(@GetUser("id") userId: number, @Body() dto: CreateArticleDto) {
+    return this.articlesService.createArticle(userId, dto);
+  }
+
+  @Delete(":articleId")
+  async deleteArticle(@Param("articleId", ParseIntPipe) articleId: number, @GetUser('id') userId: number) {
+    return this.articlesService.deleteArticle(articleId, userId);
   }
 }
