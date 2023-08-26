@@ -4,7 +4,7 @@ import { JwtService } from "@nestjs/jwt";
 import { User } from "@prisma/client";
 import { Observable } from "rxjs";
 
-import { ROLE_KEY_STRING } from "src/decorators/role.decorator";
+import { ROLE_KEY_STRING } from "../decorators/role.decorator";
 
 export class RoleGuard implements CanActivate {
 	constructor(@Inject(JwtService) private readonly jwt: JwtService, readonly reflector: Reflector) {}
