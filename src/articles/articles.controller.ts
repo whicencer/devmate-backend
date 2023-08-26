@@ -2,7 +2,11 @@ import { Controller, Get, Post } from '@nestjs/common';
 import { Article } from '@prisma/client';
 
 import { ArticleService } from './articles.service';
+<<<<<<< HEAD
 import { Authorize } from 'src/decorators';
+=======
+import { Authorize } from '../decorators/Authorize.decorator';
+>>>>>>> feature-auth
 
 @Controller('articles')
 export class ArticlesController {
