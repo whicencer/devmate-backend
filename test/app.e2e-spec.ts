@@ -6,6 +6,7 @@ import { AppModule } from './../src/app.module';
 import { SignupDto } from '../src/auth/dto';
 import { PrismaService } from '../src/prisma/prisma.service';
 import { SigninDto } from '../src/auth/dto/signin.dto';
+import { CreateArticleDto } from 'src/articles/dto/createArticle.dto';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
@@ -20,12 +21,12 @@ describe('AppController (e2e)', () => {
     app.useGlobalPipes(new ValidationPipe());
 
     await app.init();
-    await app.listen(3000);
+    await app.listen(3333);
 
     prisma = app.get(PrismaService);
     await prisma.clearDb();
     pactum.request.setBaseUrl(
-      'http://localhost:3000',
+      'http://localhost:3333',
     );
   });
 
@@ -124,6 +125,43 @@ describe('AppController (e2e)', () => {
             password: '12345678',
           })
           .expectStatus(400);
+      });
+    });
+  });
+
+  // Articles
+  describe('Articles', () => {
+    // Create
+    const createArticleDto: CreateArticleDto = {
+      content: 'Test',
+    };
+
+    describe('Create article', () => {
+      it('should create article', async () => {
+        return await pactum
+          .spec()
+          .post('/articles')
+          .withHeaders({
+            Authorization: 'Bearer $S{accessToken}',
+          })
+          .withBody(createArticleDto)
+          .expectStatus(201);
+      });
+      it('should throw if no body', async () => {
+        return await pactum
+          .spec()
+          .post('/articles')
+          .withHeaders({
+            Authorization: 'Bearer $S{accessToken}',
+          })
+          .expectStatus(400);
+      });
+      it('should throw if no token in header', async () => {
+        return await pactum
+          .spec()
+          .post('/articles')
+          .withBody(createArticleDto)
+          .expectStatus(401);
       });
     });
   });
