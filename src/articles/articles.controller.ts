@@ -16,6 +16,11 @@ export class ArticlesController {
     return this.articlesService.getArticles();
   }
 
+  @Get(":articleId")
+  async getArticleById(@Param("articleId", ParseIntPipe) articleId): Promise<Article> {
+    return this.articlesService.getArticleById(articleId);
+  }
+
   @Post()
   async createArticle(@GetUser("id") userId: number, @Body() dto: CreateArticleDto) {
     return this.articlesService.createArticle(userId, dto);

@@ -132,26 +132,6 @@ describe('AppController (e2e)', () => {
 
   // Articles
   describe('Articles', () => {
-    //Get
-    describe('Get articles', () => {
-      it('should return all articles', async () => {
-        return await pactum
-          .spec()
-          .get('/articles')
-          .withHeaders({
-            Authorization: 'Bearer $S{accessToken}',
-          })
-          .expectStatus(200);
-      });
-
-      it('throw error if no auth token provided', async () => {
-        return await pactum
-          .spec()
-          .get('/articles')
-          .expectStatus(401);
-      });
-    });
-
     // Create
     const createArticleDto: CreateArticleDto = {
       content: 'Test',
@@ -187,6 +167,48 @@ describe('AppController (e2e)', () => {
       });
     });
 
+    //Get
+    describe('Get articles', () => {
+      it('should return all articles', async () => {
+        return await pactum
+          .spec()
+          .get('/articles')
+          .withHeaders({
+            Authorization: 'Bearer $S{accessToken}',
+          })
+          .expectStatus(200);
+      });
+
+      it('throw error if no auth token provided', async () => {
+        return await pactum
+          .spec()
+          .get('/articles')
+          .expectStatus(401);
+      });
+    });
+
+    // Get by id
+    describe('Get article by id', () => {
+      it('should return article', async () => {
+        return await pactum
+          .spec()
+          .get('/articles/{articleId}')
+          .withPathParams('articleId', '$S{articleId}')
+          .withHeaders({
+            Authorization: 'Bearer $S{accessToken}',
+          })
+          .expectStatus(200);
+      });
+
+      it('throw error if no auth token provided', async () => {
+        return await pactum
+          .spec()
+          .get('/articles/{articleId}')
+          .withPathParams('articleId', '$S{articleId}')
+          .expectStatus(401);
+      });
+    });
+
     // Delete article
     describe('Delete article', () => {
       it('should delete', async () => {
@@ -203,7 +225,7 @@ describe('AppController (e2e)', () => {
         return await pactum
           .spec()
           .delete('/articles/{articleId}')
-          .withPathParams('id', '$S{articleId}')
+          .withPathParams('articleId', '$S{articleId}')
           .expectStatus(401);
       });
       it('throw error if no article with specified id found', async () => {

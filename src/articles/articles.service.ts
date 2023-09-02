@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Article } from '@prisma/client';
 import { CreateArticleDto } from './dto/createArticle.dto';
@@ -13,6 +13,24 @@ export class ArticleService {
         author: true
       }
     });
+  }
+
+  async getArticleById(articleId: number): Promise<Article> {
+    const article = await this.prisma.article.findUnique({
+      where: {
+        id: articleId,
+      },
+
+      include: {
+        author: true,
+      },
+    });
+
+    if (!article) {
+      throw new NotFoundException('Article with defined id not found');
+    }
+
+    return article;
   }
   
   async createArticle(userId: number, dto: CreateArticleDto) {
