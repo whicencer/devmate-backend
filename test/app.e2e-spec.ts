@@ -50,7 +50,8 @@ describe('AppController (e2e)', () => {
           .spec()
           .post('/auth/signup')
           .withBody(signupDto)
-          .expectStatus(201);
+          .expectStatus(201)
+          .stores('accessToken', 'accessToken');
       });
 
       it('should throw if email is empty', async () => {
@@ -131,6 +132,26 @@ describe('AppController (e2e)', () => {
 
   // Articles
   describe('Articles', () => {
+    //Get
+    describe('Get articles', () => {
+      it('should return all articles', async () => {
+        return await pactum
+          .spec()
+          .get('/articles')
+          .withHeaders({
+            Authorization: 'Bearer $S{accessToken}',
+          })
+          .expectStatus(200);
+      });
+
+      it('throw error if no auth token provided', async () => {
+        return await pactum
+          .spec()
+          .get('/articles')
+          .expectStatus(401);
+      });
+    });
+
     // Create
     const createArticleDto: CreateArticleDto = {
       content: 'Test',
@@ -145,7 +166,8 @@ describe('AppController (e2e)', () => {
             Authorization: 'Bearer $S{accessToken}',
           })
           .withBody(createArticleDto)
-          .expectStatus(201);
+          .expectStatus(201)
+          .stores('articleId', 'id');;
       });
       it('should throw if no body', async () => {
         return await pactum
@@ -162,6 +184,45 @@ describe('AppController (e2e)', () => {
           .post('/articles')
           .withBody(createArticleDto)
           .expectStatus(401);
+      });
+    });
+
+    // Delete article
+    describe('Delete article', () => {
+      it('should delete', async () => {
+        return await pactum
+          .spec()
+          .delete('/articles/{articleId}')
+          .withPathParams('articleId', '$S{articleId}')
+          .withHeaders({
+            Authorization: 'Bearer $S{accessToken}',
+          })
+          .expectStatus(204);
+      });
+      it('throw error if no auth token provided', async () => {
+        return await pactum
+          .spec()
+          .delete('/articles/{articleId}')
+          .withPathParams('id', '$S{articleId}')
+          .expectStatus(401);
+      });
+      it('throw error if no article with specified id found', async () => {
+        return await pactum
+          .spec()
+          .delete('/articles/131324')
+          .withHeaders({
+            Authorization: 'Bearer $S{accessToken}',
+          })
+          .expectStatus(403);
+      });
+      it('should get empty articles', async () => {
+        return await pactum
+          .spec()
+          .get('/articles')
+          .withHeaders({
+            Authorization: 'Bearer $S{accessToken}',
+          })
+          .expectStatus(200);
       });
     });
   });

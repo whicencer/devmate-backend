@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Post } from "@nestjs/common";
 import { Article } from "@prisma/client";
 
 import { Authorize } from '../decorators/Authorize.decorator';
@@ -21,8 +21,9 @@ export class ArticlesController {
     return this.articlesService.createArticle(userId, dto);
   }
 
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(":articleId")
-  async deleteArticle(@Param("articleId", ParseIntPipe) articleId: number, @GetUser('id') userId: number) {
+  async deleteArticle(@GetUser('id') userId: number, @Param("articleId", ParseIntPipe) articleId: number) {
     return this.articlesService.deleteArticle(articleId, userId);
   }
 }
