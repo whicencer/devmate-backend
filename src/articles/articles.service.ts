@@ -1,7 +1,8 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Article } from '@prisma/client';
-import { CreateArticleDto } from './dto/createArticle.dto';
+import { CreateArticleDto } from './dto/CreateArticle.dto';
+import { EditArticleDto } from './dto/EditArticleDto.dto';
 
 @Injectable()
 export class ArticleService {
@@ -31,6 +32,32 @@ export class ArticleService {
     }
 
     return article;
+  }
+
+  async editArticle(
+    userId: number,
+    articleId: number,
+    dto: EditArticleDto,
+  ) {
+    const article = await this.prisma.article.findUnique({
+      where: {
+        id: articleId
+      }
+    });
+
+    // check if user owns article
+    if (!article || article.userId !== userId) {
+      throw new ForbiddenException('Access to resources denied');
+    }
+
+    return this.prisma.article.update({
+      where: {
+        id: articleId
+      },
+      data: {
+        ...dto
+      },
+    });
   }
   
   async createArticle(userId: number, dto: CreateArticleDto) {

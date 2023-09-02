@@ -6,7 +6,7 @@ import { AppModule } from './../src/app.module';
 import { SignupDto } from '../src/auth/dto';
 import { PrismaService } from '../src/prisma/prisma.service';
 import { SigninDto } from '../src/auth/dto/signin.dto';
-import { CreateArticleDto } from 'src/articles/dto/createArticle.dto';
+import { CreateArticleDto } from 'src/articles/dto/CreateArticle.dto';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
