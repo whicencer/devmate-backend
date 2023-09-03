@@ -7,6 +7,7 @@ import { SignupDto } from '../src/auth/dto';
 import { PrismaService } from '../src/prisma/prisma.service';
 import { SigninDto } from '../src/auth/dto/signin.dto';
 import { CreateArticleDto } from 'src/articles/dto/CreateArticle.dto';
+import { EditArticleDto } from 'src/articles/dto/EditArticleDto.dto';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
@@ -206,6 +207,24 @@ describe('AppController (e2e)', () => {
           .get('/articles/{articleId}')
           .withPathParams('articleId', '$S{articleId}')
           .expectStatus(401);
+      });
+    });
+
+    // Change article
+    describe('Change article', () => {
+      const dto: EditArticleDto = {
+        content: 'test',
+      };
+      it('should update', () => {
+        return pactum
+          .spec()
+          .patch('/articles/{articleId}')
+          .withPathParams('articleId', '$S{articleId}')
+          .withHeaders({
+            Authorization: 'Bearer $S{accessToken}',
+          })
+          .withBody(dto)
+          .expectStatus(200);
       });
     });
 
