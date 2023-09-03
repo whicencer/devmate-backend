@@ -20,7 +20,6 @@ export class AuthService {
 			// create user in database
 			const user = await this.prisma.user.create({
 				data: {
-					email: dto.email,
 					fullname: dto.fullname,
 					hash,
 					username: dto.username
@@ -62,7 +61,7 @@ export class AuthService {
 		return this.signToken(user.id, user.username, user.role);
 	}
 
-	async signToken(userId: number, username: string, role: string): Promise<{ accessToken: string }> {
+	async signToken(userId: number, username: string, role: string): Promise<{ accessToken: string, username: string }> {
 		const payload = {
 			id: userId,
 			username,
@@ -77,6 +76,6 @@ export class AuthService {
 		});
 
 		// return token
-		return { accessToken: token };
+		return { accessToken: token, username };
 	}
 }
