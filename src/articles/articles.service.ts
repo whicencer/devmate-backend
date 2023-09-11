@@ -12,6 +12,9 @@ export class ArticleService {
     return this.prisma.article.findMany({
       include: {
         author: true
+      },
+      orderBy: {
+        createdAt: 'desc'
       }
     });
   }
@@ -65,6 +68,9 @@ export class ArticleService {
       data: {
         userId,
         ...dto
+      },
+      include: {
+        author: true
       }
     });
 
