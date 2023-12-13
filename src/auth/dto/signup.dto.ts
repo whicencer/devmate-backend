@@ -1,11 +1,12 @@
-import { IsNotEmpty, MinLength } from 'class-validator';
+import { IsNotEmpty, MinLength, MaxLength } from 'class-validator';
 
 export class SignupDto {
 	@IsNotEmpty()
+	@MaxLength(22)
 	fullname: string;
 
 	@IsNotEmpty()
-	@MinLength(2)
+	@MaxLength(16)
 	username: string;
 
 	@IsNotEmpty()

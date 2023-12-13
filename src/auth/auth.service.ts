@@ -27,7 +27,7 @@ export class AuthService {
 			});
 			
 			// return accessToken (JWT)
-			return this.signToken(user.id, user.username, user.role);
+			return this.signToken(user.id, user.username, user.role, user.fullname, user.profilePicture);
 		} catch (error) {
 			// if error is instance of PrismaClient Request error
 			if (error instanceof PrismaClientKnownRequestError) {
@@ -58,10 +58,16 @@ export class AuthService {
 		if (!passwordMatches) throw new ForbiddenException('Credentials not correct'); 
 
 		// return accessToken (JWT)
-		return this.signToken(user.id, user.username, user.role);
+		return this.signToken(user.id, user.username, user.role, user.fullname, user.profilePicture);
 	}
 
-	async signToken(userId: number, username: string, role: string): Promise<{ accessToken: string, username: string }> {
+	async signToken(
+			userId: number,
+			username: string,
+			role: string,
+			fullname: string,
+			profilePicture: string
+		):Promise<{ accessToken: string, username: string, fullname: string, profilePicture: string }> {
 		const payload = {
 			id: userId,
 			username,
@@ -76,6 +82,6 @@ export class AuthService {
 		});
 
 		// return token
-		return { accessToken: token, username };
+		return { accessToken: token, username, fullname, profilePicture };
 	}
 }
