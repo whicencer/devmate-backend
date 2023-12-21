@@ -22,7 +22,8 @@ export class AuthService {
 				data: {
 					fullname: dto.fullname,
 					hash,
-					username: dto.username
+					username: dto.username,
+					profilePicture: dto.profilePicture
 				}
 			});
 			
