@@ -6,6 +6,7 @@ import { ArticleService } from "./articles.service";
 import { CreateArticleDto } from "./dto/CreateArticle.dto";
 import { GetUser } from "../decorators";
 import { EditArticleDto } from "./dto/EditArticleDto.dto";
+import { RemoveArticleLike } from "./dto/RemoveArticleLike.dto";
 
 @Controller("articles")
 @Authorize()
@@ -43,7 +44,11 @@ export class ArticlesController {
   }
 
   @Post("like/:articleId")
-  async likeArticle(@GetUser('id') userId: number, @Param("articleId", ParseIntPipe) articleId: number) {
-    return this.articlesService.likeArticle(articleId, userId);
+  async likeArticle(
+    @GetUser('id') userId: number,
+    @Param("articleId", ParseIntPipe) articleId: number,
+    @Body() dto: RemoveArticleLike
+  ) {
+    return await this.articlesService.likeArticle(articleId, userId, dto.likeId);
   }
 }

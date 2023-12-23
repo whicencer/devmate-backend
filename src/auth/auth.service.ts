@@ -68,7 +68,7 @@ export class AuthService {
 			role: string,
 			fullname: string,
 			profilePicture: string
-		):Promise<{ accessToken: string, username: string, fullname: string, profilePicture: string }> {
+		):Promise<{ accessToken: string, username: string, fullname: string, profilePicture: string, userId: number }> {
 		const payload = {
 			id: userId,
 			username,
@@ -83,6 +83,6 @@ export class AuthService {
 		});
 
 		// return token
-		return { accessToken: token, username, fullname, profilePicture };
+		return { userId, accessToken: token, username, fullname, profilePicture };
 	}
 }

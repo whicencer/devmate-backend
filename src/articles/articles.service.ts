@@ -96,22 +96,30 @@ export class ArticleService {
     });
   }
 
-  async likeArticle(articleId: number, userId: number) {
-    const articleById = await this.prisma.article.findUnique({
-      where: {
-        id: articleId
-      }
-    });
+  async likeArticle(articleId: number, userId: number, likeId?: number) {
+    if (likeId) {
+      const userLike = await this.prisma.like.delete({
+        where: {
+          id: likeId,
+          userId,
+          articleId
+        }
+      });
 
-    if (!articleById) {
-      throw new NotFoundException(`Article with ID ${articleId} not found`);
+      if (!userLike) {
+        throw new NotFoundException(`Like with ID ${likeId} was not found`);
+      }
+  
+      return JSON.stringify(`Remove like with ID ${userLike.id}`);
+    } else {
+      const userLike = await this.prisma.like.create({
+        data: {
+          articleId,
+          userId,
+        }
+      });
+
+      return userLike;
     }
-
-    await this.prisma.like.create({
-      data: {
-        articleId,
-        userId,
-      }
-    });
   }
 }
