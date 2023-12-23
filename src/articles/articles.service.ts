@@ -11,7 +11,8 @@ export class ArticleService {
   async getArticles(): Promise<Article[]> {
     return this.prisma.article.findMany({
       include: {
-        author: true
+        author: true,
+        likes: true
       },
       orderBy: {
         createdAt: 'desc'
@@ -91,6 +92,25 @@ export class ArticleService {
     await this.prisma.article.delete({
       where: {
         id: articleId
+      }
+    });
+  }
+
+  async likeArticle(articleId: number, userId: number) {
+    const articleById = await this.prisma.article.findUnique({
+      where: {
+        id: articleId
+      }
+    });
+
+    if (!articleById) {
+      throw new NotFoundException(`Article with ID ${articleId} not found`);
+    }
+
+    await this.prisma.like.create({
+      data: {
+        articleId,
+        userId,
       }
     });
   }

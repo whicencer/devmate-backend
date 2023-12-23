@@ -11,32 +11,41 @@ datasource db {
 }
 
 model User {
-	id              Int       @id @default(autoincrement())
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  username        String    @unique
-  fullname        String
-  profilePicture  String?
-  hash            String
-  role            String    @default("user")
+  username       String  @unique
+  fullname       String
+  profilePicture String?
+  hash           String
+  role           String  @default("user")
 
-  articles        Article[]
+  articles Article[]
 
   @@map("users")
 }
 
 model Article {
-	id        Int      @id @default(autoincrement())
-	createdAt DateTime @default(now())
-	updatedAt DateTime @updatedAt
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-	content   String
-  media     String?
-  likes     Int      @default(0)
+  content String
+  media   String?
+  likes   Like[]
 
-  userId    Int
-	author    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int
+  author User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("articles")
+}
+
+model Like {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  Article   Article? @relation(fields: [articleId], references: [id])
+  articleId Int?
+
+  @@map("like")
 }
